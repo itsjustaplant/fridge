@@ -7,8 +7,10 @@ import {
 	ScrollRestoration,
 } from "react-router";
 import type { Route } from "./+types/root";
+import { AppSidebar } from "./components/app-sidebar";
+import { SiteHeader } from "./components/site-header";
+import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
 import "./app.css";
-import { useTheme } from "./hooks/use-theme";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,7 +35,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body className="w-full h-full m-0 p-0 flex flex-col items-center">
-				{children}
+				<SidebarProvider
+					style={
+						{
+							"--sidebar-width": "calc(var(--spacing) * 72)",
+							"--header-height": "calc(var(--spacing) * 12)",
+						} as React.CSSProperties
+					}
+				>
+					<AppSidebar variant="inset" />
+					<SidebarInset>
+						<SiteHeader />
+						{children}
+					</SidebarInset>
+				</SidebarProvider>
 				<ScrollRestoration />
 				<Scripts />
 			</body>
