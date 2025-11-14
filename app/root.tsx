@@ -10,6 +10,7 @@ import type { Route } from "./+types/root";
 import { AppSidebar } from "./components/app-sidebar";
 import { SiteHeader } from "./components/site-header";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
+import { Toaster } from "./components/ui/sonner";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -48,6 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 						<SiteHeader />
 						{children}
 					</SidebarInset>
+					<Toaster />
 				</SidebarProvider>
 				<ScrollRestoration />
 				<Scripts />

@@ -1,20 +1,4 @@
-import {
-	IconCamera,
-	IconChartBar,
-	IconDashboard,
-	IconDatabase,
-	IconFileAi,
-	IconFileDescription,
-	IconFileWord,
-	IconFolder,
-	IconFridge,
-	IconHelp,
-	IconListDetails,
-	IconReport,
-	IconSearch,
-	IconSettings,
-	IconUsers,
-} from "@tabler/icons-react";
+import { IconFridge, IconListDetails } from "@tabler/icons-react";
 import type * as React from "react";
 import { NavMain } from "~/components/nav-main";
 import { NavUser } from "~/components/nav-user";

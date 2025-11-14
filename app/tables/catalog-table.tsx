@@ -17,6 +17,7 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { IconDotsVertical, IconPencil, IconTrashX } from "@tabler/icons-react";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -33,7 +34,17 @@ import {
 	type VisibilityState,
 } from "@tanstack/react-table";
 import * as React from "react";
+import { useEffect } from "react";
+import { useFetcher } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "~/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import {
 	Table,
 	TableBody,
@@ -42,6 +53,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
+import { EHTTP_RESPONSES } from "~/types";
 
 export const schema = z.object({
 	barcode: z.string(),
@@ -82,6 +94,38 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 			return <span>{row.original.category}</span>;
 		},
 		enableHiding: false,
+	},
+	{
+		id: "actions",
+		cell: ({ row, table }) => (
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+						size="icon"
+					>
+						<IconDotsVertical />
+						<span className="sr-only">Open menu</span>
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end" className="w-32">
+					<DropdownMenuItem>
+						<IconPencil />
+						Edit
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						variant="destructive"
+						onSelect={() =>
+							table?.options?.meta?.handleDelete?.(row.original.barcode)
+						}
+					>
+						<IconTrashX />
+						Delete
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		),
 	},
 ];
 
@@ -133,6 +177,7 @@ export function DataTable({
 		useSensor(TouchSensor, {}),
 		useSensor(KeyboardSensor, {}),
 	);
+	const fetcher = useFetcher();
 
 	const dataIds = React.useMemo<UniqueIdentifier[]>(
 		() => data?.map(({ barcode }) => barcode) || [],
@@ -162,7 +207,50 @@ export function DataTable({
 		getSortedRowModel: getSortedRowModel(),
 		getFacetedRowModel: getFacetedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
+		meta: {
+			handleDelete: handleDelete,
+		},
 	});
+
+	useEffect(() => {
+		setData(initialData);
+	}, [initialData]);
+
+	const { data: fetcherResponse, state } = fetcher;
+
+	useEffect(() => {
+		if (
+			state === "idle" &&
+			fetcherResponse &&
+			fetcherResponse?.message &&
+			fetcherResponse?.status
+		) {
+			const { message, status } = fetcherResponse;
+			if (
+				status === EHTTP_RESPONSES.BAD_REQUEST ||
+				status === EHTTP_RESPONSES.NOT_FOUND
+			) {
+				toast.error(message);
+			} else {
+				toast.success(message);
+			}
+		}
+	}, [
+		fetcherResponse,
+		fetcherResponse?.message,
+		fetcherResponse?.status,
+		state,
+	]);
+
+	async function handleDelete(id: string) {
+		if (data) {
+			const result = await fetcher.submit(
+				{ barcode: id },
+				{ method: "DELETE", action: "/catalog" },
+			);
+			console.log("result", result);
+		}
+	}
 
 	function handleDragEnd(event: DragEndEvent) {
 		const { active, over } = event;

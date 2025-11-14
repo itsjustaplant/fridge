@@ -1,5 +1,5 @@
-import { type Icon, IconCirclePlusFilled } from "@tabler/icons-react";
-import { useNavigate } from "react-router";
+import type { Icon } from "@tabler/icons-react";
+import { useLocation, useNavigate } from "react-router";
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -7,6 +7,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "~/components/ui/sidebar";
+import { cn } from "~/lib/utils";
 
 export function NavMain({
 	items,
@@ -17,10 +18,14 @@ export function NavMain({
 		icon?: Icon;
 	}[];
 }) {
+	const location = useLocation();
 	const navigate = useNavigate();
+
 	const handleClick = (url: string) => {
+		console.log(url);
 		navigate(url);
 	};
+
 	return (
 		<SidebarGroup>
 			<SidebarGroupContent className="flex flex-col gap-2">
@@ -28,6 +33,9 @@ export function NavMain({
 					{items.map((item) => (
 						<SidebarMenuItem key={item.title}>
 							<SidebarMenuButton
+								className={cn("cursor-pointer", {
+									"bg-gray-200": item.url === location.pathname,
+								})}
 								tooltip={item.title}
 								onClick={() => handleClick(item.url)}
 							>

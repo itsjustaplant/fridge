@@ -1,4 +1,7 @@
+import { data } from "react-router";
 import { DataTable } from "~/tables/catalog-table";
+import type { TProductCatalog } from "~/types";
+import { EHTTP_RESPONSES } from "~/types";
 import type { Route } from "../+types/root";
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -6,10 +9,61 @@ export async function loader({ context }: Route.LoaderArgs) {
 		const { results } = await context.cloudflare.env.DB.prepare(
 			`SELECT * FROM product_catalog ORDER BY rowid DESC LIMIT 7`,
 		).all();
-		console.log(results);
 		return { results };
 	} catch (e) {
-		console.log(e);
+		console.log(`Cannot get product catalog due to: ${e}`);
+	}
+}
+
+export async function action({ request, context }: Route.ActionArgs) {
+	const method = request?.method;
+
+	try {
+		const formData = await request.formData();
+		const barcode = formData.get("barcode");
+
+		switch (method) {
+			case "DELETE": {
+				// get item
+				const { results } = await context.cloudflare.env.DB.prepare(
+					`SELECT * FROM product_catalog WHERE barcode = "${barcode}" LIMIT 1`,
+				).all<TProductCatalog>();
+				if (!results || !results.length || results?.length === 0) {
+					const status = EHTTP_RESPONSES.NOT_FOUND;
+					return data(
+						{ message: `Couldn't find item with barcode: ${barcode}`, status },
+						{ status },
+					);
+				}
+
+				// delete item
+				await context.cloudflare.env.DB.prepare(
+					`DELETE FROM product_catalog WHERE barcode = "${barcode}"`,
+				).all<TProductCatalog>();
+				const status = EHTTP_RESPONSES.OK;
+				return data(
+					{ message: `Deleted item with barcode: ${barcode}`, status },
+					{ status },
+				);
+			}
+			default: {
+				const status = EHTTP_RESPONSES.BAD_REQUEST;
+				return data(
+					{ message: `Invalid method: ${method}`, status },
+					{ status },
+				);
+			}
+		}
+	} catch (e) {
+		const status = EHTTP_RESPONSES.BAD_REQUEST;
+		console.log(`Cannot delete product catalog due to: ${e}`);
+		return data(
+			{
+				message: `There was an error while processing your ${method} request`,
+				status,
+			},
+			{ status },
+		);
 	}
 }
 
