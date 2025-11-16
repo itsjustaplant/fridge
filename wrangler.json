@@ -10,5 +10,10 @@
   "upload_source_maps": true,
   "vars": {
     "VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
-  }
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "duck",
+    "database_id": "c471f77a-3225-4630-bef7-f55bf8bdbd2d"
+ }]
 }

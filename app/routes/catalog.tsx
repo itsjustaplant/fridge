@@ -1,5 +1,5 @@
 import { data } from "react-router";
-import { DataTable } from "~/tables/catalog-table";
+import { DataTable } from "~/components/tables/catalog-table";
 import type { TProductCatalog } from "~/types";
 import { EHTTP_RESPONSES } from "~/types";
 import type { Route } from "../+types/root";
@@ -24,6 +24,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 		switch (method) {
 			case "DELETE": {
+				// TODO: do this before every method and handle its error separately
 				// get item
 				const { results } = await context.cloudflare.env.DB.prepare(
 					`SELECT * FROM product_catalog WHERE barcode = "${barcode}" LIMIT 1`,

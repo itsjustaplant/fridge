@@ -1,5 +1,5 @@
 import type { Icon } from "@tabler/icons-react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -18,7 +18,6 @@ export function NavMain({
 		icon?: Icon;
 	}[];
 }) {
-	const location = useLocation();
 	const navigate = useNavigate();
 
 	const handleClick = (url: string) => {
@@ -33,9 +32,7 @@ export function NavMain({
 					{items.map((item) => (
 						<SidebarMenuItem key={item.title}>
 							<SidebarMenuButton
-								className={cn("cursor-pointer", {
-									"bg-gray-200": item.url === location.pathname,
-								})}
+								className={cn("cursor-pointer")}
 								tooltip={item.title}
 								onClick={() => handleClick(item.url)}
 							>

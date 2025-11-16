@@ -41,13 +41,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							asChild
-							className="data-[slot=sidebar-menu-button]:!p-1.5"
+							className="data-[slot=sidebar-menu-button]:!p-1.5 overflow-visible hover:!bg-sidebar"
 						>
 							<div>
-								<div className="size-7 flex items-center content-center bg-primary rounded-md p-0.5">
+								<div className="size-7 flex items-center content-center bg-primary rounded-md p-0.5 shadow-[0_0_70px_14px_rgba(255,212,93,0.9)]">
 									<DuckIcon
 										ariaLabel="duck logo"
-										className="scale-x-[-1] fill-primary-foreground"
+										className="scale-x-[-1] fill-[var(--duck)]"
 									/>
 								</div>
 								<span className="text-xl font-semibold font-playfair-800">

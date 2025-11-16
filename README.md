@@ -107,3 +107,6 @@ This template comes with [Tailwind CSS](https://tailwindcss.com/) already config
 ---
 
 Built with ❤️ using React Router.
+
+## Commands
+npx wrangler d1 execute duck --local --file ./app/schemas/product_catalog.sql
