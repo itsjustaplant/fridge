@@ -4,6 +4,7 @@ import {
 	drawerKeyAtom,
 	drawerVisibilityAtom,
 } from "~/atoms/drawerAtom";
+import { useIsMobile } from "~/hooks/use-mobile";
 import { EDrawerContent, EDrawerMode } from "~/types";
 import { CatalogItemDrawer } from "./drawers/catalog-item-drawer";
 import { Drawer } from "./ui/drawer";
@@ -32,11 +33,13 @@ export function DrawerWrapper() {
 	const [drawerKey, setDrawerKey] = useAtom(drawerKeyAtom);
 	const [drawerVisibility, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
 	const [, setDrawerData] = useAtom(drawerDataAtom);
+	const isMobile = useIsMobile();
 
 	const drawer = getDrawerProperties(drawerKey);
 	return (
 		<Drawer
 			open={drawerVisibility}
+			direction={isMobile ? "bottom" : "right"}
 			onClose={() => {
 				setDrawerVisibility(false);
 				setDrawerKey(undefined);

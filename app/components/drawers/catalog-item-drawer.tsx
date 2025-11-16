@@ -4,6 +4,8 @@ import { BarcodeScanner, type DetectedBarcode } from "react-barcode-scanner";
 import { type HTMLFormMethod, useFetcher } from "react-router";
 import { toast } from "sonner";
 import { drawerDataAtom, drawerVisibilityAtom } from "~/atoms/drawerAtom";
+import { useIsMobile } from "~/hooks/use-mobile";
+import { cn } from "~/lib/utils";
 import type { TProductCatalog } from "~/types";
 import { EDrawerMode, EHTTPResponse } from "~/types";
 import { Button } from "../ui/button";
@@ -36,6 +38,7 @@ const ID_PREFIX = "add-catalog-drawer";
 
 export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 	const isEditMode = mode === EDrawerMode.EDIT;
+	console.log(isEditMode);
 
 	const [, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
 	const [drawerData] = useAtom(drawerDataAtom);
@@ -47,12 +50,13 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 		category: originalCategory,
 	} = drawerData as TProductCatalog;
 
-	const [step, setStep] = useState(isEditMode ? 1 : 0);
+	const [step, setStep] = useState(0);
 	const [barcodes, setBarcodes] = useState<DetectedBarcode[]>([]);
 	const [name, setName] = useState("");
 	const [manufacturer, setManufacturer] = useState("");
 	const [category, setCategory] = useState("");
 	const fetcher = useFetcher();
+	const isMobile = useIsMobile();
 
 	const method = isEditMode ? "patch" : "post";
 	const { data: fetcherResponse, state } = fetcher;
@@ -129,21 +133,26 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 
 	return (
 		<DrawerContent>
-			<div className="max-w-md mx-auto overflow-auto">
+			<div
+				className={cn("max-w-md mx-auto", {
+					"overflow-auto": isMobile,
+					"h-full": !isMobile,
+				})}
+			>
 				<DrawerHeader className="sticky top-0 bg-background">
 					<DrawerTitle>
 						{isEditMode ? "Edit Catalog Item" : "Add Catalog Item"}
 					</DrawerTitle>
 					<DrawerDescription className="text-left">
-						{step === 0
+						{step === 0 && !isEditMode
 							? "Scan barcode."
 							: isEditMode
-								? "Edit name, manufacturer or category."
+								? "Edit name, manufacturer or category to edit this item."
 								: "Enter name, manufacturer and category to create new item."}
 					</DrawerDescription>
 				</DrawerHeader>
 				<div className="flex flex-col p-4 pt-0 w-full gap-3 h-full">
-					{step === 0 ? (
+					{step === 0 && !isEditMode ? (
 						<div className="justify-self-center flex items-center justify-center w-full h-[360px]">
 							<BarcodeScanner
 								options={{ delay: 1000, formats: ["ean_13", "ean_8"] }}
@@ -231,6 +240,7 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 										<Field orientation="horizontal">
 											<Button
 												onClick={() => {
+													// TODO: detect submit and move this logic to there
 													setDrawerVisibility(false);
 												}}
 												type="submit"
