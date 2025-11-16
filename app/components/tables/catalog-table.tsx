@@ -244,11 +244,10 @@ export function DataTable({
 
 	async function handleDelete(id: string) {
 		if (data) {
-			const result = await fetcher.submit(
+			await fetcher.submit(
 				{ barcode: id },
 				{ method: "DELETE", action: "/catalog" },
 			);
-			console.log("result", result);
 		}
 	}
 

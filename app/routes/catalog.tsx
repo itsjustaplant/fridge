@@ -22,13 +22,12 @@ export async function action({ request, context }: Route.ActionArgs) {
 		const formData = await request.formData();
 		const barcode = formData.get("barcode");
 
+		const { results } = await context.cloudflare.env.DB.prepare(
+			`SELECT * FROM product_catalog WHERE barcode = "${barcode}" LIMIT 1`,
+		).all<TProductCatalog>();
+
 		switch (method) {
 			case "DELETE": {
-				// TODO: do this before every method and handle its error separately
-				// get item
-				const { results } = await context.cloudflare.env.DB.prepare(
-					`SELECT * FROM product_catalog WHERE barcode = "${barcode}" LIMIT 1`,
-				).all<TProductCatalog>();
 				if (!results || !results.length || results?.length === 0) {
 					const status = EHTTP_RESPONSES.NOT_FOUND;
 					return data(
@@ -36,7 +35,6 @@ export async function action({ request, context }: Route.ActionArgs) {
 						{ status },
 					);
 				}
-
 				// delete item
 				await context.cloudflare.env.DB.prepare(
 					`DELETE FROM product_catalog WHERE barcode = "${barcode}"`,
@@ -44,6 +42,27 @@ export async function action({ request, context }: Route.ActionArgs) {
 				const status = EHTTP_RESPONSES.OK;
 				return data(
 					{ message: `Deleted item with barcode: ${barcode}`, status },
+					{ status },
+				);
+			}
+			case "POST": {
+				if (results?.length && results?.length >= 1) {
+					const status = EHTTP_RESPONSES.BAD_REQUEST;
+					return data(
+						{ message: `Item with barcode: ${barcode} already exists`, status },
+						{ status },
+					);
+				}
+				// add item
+				const name = formData.get("name");
+				const manufacturer = formData.get("manufacturer");
+				const category = formData.get("category");
+				await context.cloudflare.env.DB.prepare(
+					`INSERT INTO product_catalog (barcode, name, manufacturer, category) VALUES ("${barcode}", "${name}", "${manufacturer}", "${category}")`,
+				).all();
+				const status = EHTTP_RESPONSES.OK;
+				return data(
+					{ message: `Added item with barcode: ${barcode}`, status },
 					{ status },
 				);
 			}
