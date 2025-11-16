@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BarcodeScanner } from "../barcode-scanner";
+import { BarcodeScanner, type DetectedBarcode } from "react-barcode-scanner";
 import { Button } from "../ui/button";
 import {
 	DrawerContent,
@@ -28,6 +28,7 @@ import {
 const ID_PREFIX = "add-catalog-drawer";
 export function AddCatalogItemDrawer() {
 	const [step, newStep] = useState(0);
+	const [barcodes, setBarcodes] = useState<DetectedBarcode[]>([]);
 	return (
 		<DrawerContent>
 			<div className="max-w-md mx-auto overflow-auto">
@@ -35,11 +36,17 @@ export function AddCatalogItemDrawer() {
 					<DrawerTitle>Add Catalog Item</DrawerTitle>
 					<DrawerDescription className="text-left">
 						Enter barcode, name, manufacturer and category to create new item.
+						{barcodes?.map((barcode) => (
+							<span key={barcode?.rawValue}>{barcode?.rawValue}</span>
+						))}
 					</DrawerDescription>
 				</DrawerHeader>
 				<div className="flex flex-col p-4 pt-0 w-full gap-3 h-full">
 					{step === 0 ? (
-						<BarcodeScanner />
+						<BarcodeScanner
+							options={{ delay: 1000, formats: ["ean_13", "ean_8"] }}
+							onCapture={(barcodes) => setBarcodes(barcodes)}
+						/>
 					) : (
 						<form>
 							<FieldSet>

@@ -23,25 +23,3 @@ export enum EHTTP_RESPONSES {
 	BAD_REQUEST = 400,
 	NOT_FOUND = 404,
 }
-
-export interface Point {
-	x: number;
-	y: number;
-}
-
-export interface DetectedBarcode {
-	boundingBox: DOMRectReadOnly;
-	cornerPoints: Point[];
-	format: string;
-	rawValue: string;
-}
-
-declare global {
-	interface Window {
-		BarcodeDetector: {
-			constructor: (options?: { formats: string[] }) => void;
-			getSupportedFormats: () => Promise<string[]>;
-			detect: (source: ImageBitmapSource) => Promise<DetectedBarcode[]>;
-		};
-	}
-}

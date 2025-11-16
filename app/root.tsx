@@ -11,6 +11,7 @@ import { AppSidebar } from "./components/app-sidebar";
 import { SiteHeader } from "./components/site-header";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
 import { Toaster } from "./components/ui/sonner";
+import "react-barcode-scanner/polyfill";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
