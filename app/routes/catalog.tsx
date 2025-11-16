@@ -1,7 +1,7 @@
 import { data } from "react-router";
 import { DataTable } from "~/components/tables/catalog-table";
 import type { TProductCatalog } from "~/types";
-import { EHTTP_RESPONSES } from "~/types";
+import { EHTTPResponse } from "~/types";
 import type { Route } from "../+types/root";
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -21,6 +21,9 @@ export async function action({ request, context }: Route.ActionArgs) {
 	try {
 		const formData = await request.formData();
 		const barcode = formData.get("barcode");
+		const name = formData.get("name");
+		const manufacturer = formData.get("manufacturer");
+		const category = formData.get("category");
 
 		const { results } = await context.cloudflare.env.DB.prepare(
 			`SELECT * FROM product_catalog WHERE barcode = "${barcode}" LIMIT 1`,
@@ -29,7 +32,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 		switch (method) {
 			case "DELETE": {
 				if (!results || !results.length || results?.length === 0) {
-					const status = EHTTP_RESPONSES.NOT_FOUND;
+					const status = EHTTPResponse.NOT_FOUND;
 					return data(
 						{ message: `Couldn't find item with barcode: ${barcode}`, status },
 						{ status },
@@ -37,9 +40,9 @@ export async function action({ request, context }: Route.ActionArgs) {
 				}
 				// delete item
 				await context.cloudflare.env.DB.prepare(
-					`DELETE FROM product_catalog WHERE barcode = "${barcode}"`,
+					`DELETE FROM product_catalog WHERE barcode="${barcode}"`,
 				).all<TProductCatalog>();
-				const status = EHTTP_RESPONSES.OK;
+				const status = EHTTPResponse.OK;
 				return data(
 					{ message: `Deleted item with barcode: ${barcode}`, status },
 					{ status },
@@ -47,36 +50,49 @@ export async function action({ request, context }: Route.ActionArgs) {
 			}
 			case "POST": {
 				if (results?.length && results?.length >= 1) {
-					const status = EHTTP_RESPONSES.BAD_REQUEST;
+					const status = EHTTPResponse.BAD_REQUEST;
 					return data(
 						{ message: `Item with barcode: ${barcode} already exists`, status },
 						{ status },
 					);
 				}
 				// add item
-				const name = formData.get("name");
-				const manufacturer = formData.get("manufacturer");
-				const category = formData.get("category");
 				await context.cloudflare.env.DB.prepare(
 					`INSERT INTO product_catalog (barcode, name, manufacturer, category) VALUES ("${barcode}", "${name}", "${manufacturer}", "${category}")`,
 				).all();
-				const status = EHTTP_RESPONSES.OK;
+				const status = EHTTPResponse.OK;
 				return data(
 					{ message: `Added item with barcode: ${barcode}`, status },
 					{ status },
 				);
 			}
+			case "PATCH": {
+				if (!results || results?.length !== 1) {
+					const status = EHTTPResponse.BAD_REQUEST;
+					return data(
+						{ message: `Item with barcode: ${barcode} doesn't exists`, status },
+						{ status },
+					);
+				}
+				await context.cloudflare.env.DB.prepare(
+					`UPDATE product_catalog SET name="${name}", manufacturer="${manufacturer}", category="${category}" where barcode="${barcode}"`,
+				).all();
+				const status = EHTTPResponse.OK;
+				return data(
+					{ message: `Update item with barcode: ${barcode}`, status },
+					{ status },
+				);
+			}
 			default: {
-				const status = EHTTP_RESPONSES.BAD_REQUEST;
+				const status = EHTTPResponse.BAD_REQUEST;
 				return data(
 					{ message: `Invalid method: ${method}`, status },
 					{ status },
 				);
 			}
 		}
-	} catch (e) {
-		const status = EHTTP_RESPONSES.BAD_REQUEST;
-		console.log(`Cannot delete product catalog due to: ${e}`);
+	} catch (_) {
+		const status = EHTTPResponse.BAD_REQUEST;
 		return data(
 			{
 				message: `There was an error while processing your ${method} request`,

@@ -33,11 +33,17 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
+import { useAtom } from "jotai";
 import * as React from "react";
 import { useEffect } from "react";
 import { useFetcher } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
+import {
+	drawerDataAtom,
+	drawerKeyAtom,
+	drawerVisibilityAtom,
+} from "~/atoms/drawerAtom";
 import { Button } from "~/components/ui/button";
 import {
 	DropdownMenu,
@@ -53,7 +59,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { EHTTP_RESPONSES } from "~/types";
+import { EDrawerContent, EHTTPResponse, type TProductCatalog } from "~/types";
 
 export const schema = z.object({
 	barcode: z.string(),
@@ -110,7 +116,11 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-32">
-					<DropdownMenuItem>
+					<DropdownMenuItem
+						onSelect={() => {
+							table?.options?.meta?.handleEdit?.(row?.original);
+						}}
+					>
 						<IconPencil />
 						Edit
 					</DropdownMenuItem>
@@ -178,6 +188,9 @@ export function DataTable({
 		useSensor(KeyboardSensor, {}),
 	);
 	const fetcher = useFetcher();
+	const [, setDrawerKey] = useAtom(drawerKeyAtom);
+	const [, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
+	const [, setDrawerData] = useAtom(drawerDataAtom);
 
 	const dataIds = React.useMemo<UniqueIdentifier[]>(
 		() => data?.map(({ barcode }) => barcode) || [],
@@ -209,6 +222,7 @@ export function DataTable({
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 		meta: {
 			handleDelete: handleDelete,
+			handleEdit: handleEdit,
 		},
 	});
 
@@ -227,8 +241,8 @@ export function DataTable({
 		) {
 			const { message, status } = fetcherResponse;
 			if (
-				status === EHTTP_RESPONSES.BAD_REQUEST ||
-				status === EHTTP_RESPONSES.NOT_FOUND
+				status === EHTTPResponse.BAD_REQUEST ||
+				status === EHTTPResponse.NOT_FOUND
 			) {
 				toast.error(message);
 			} else {
@@ -249,6 +263,12 @@ export function DataTable({
 				{ method: "DELETE", action: "/catalog" },
 			);
 		}
+	}
+
+	function handleEdit(data: TProductCatalog) {
+		setDrawerKey(EDrawerContent.EDIT_CATALOG_ITEM_DRAWER);
+		setDrawerVisibility(true);
+		setDrawerData(data);
 	}
 
 	function handleDragEnd(event: DragEndEvent) {

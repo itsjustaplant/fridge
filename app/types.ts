@@ -15,11 +15,24 @@ export type TProductCatalog = {
 declare module "@tanstack/table-core" {
 	interface TableMeta<TData extends RowData> {
 		handleDelete: (id: string) => void;
+		handleEdit: (data: TProductCatalog) => void;
 	}
 }
 
-export enum EHTTP_RESPONSES {
+export enum EHTTPResponse {
 	OK = 200,
 	BAD_REQUEST = 400,
 	NOT_FOUND = 404,
+}
+
+export enum EDrawerContent {
+	ADD_CATALOG_ITEM_DRAWER,
+	EDIT_CATALOG_ITEM_DRAWER,
+	ADD_ITEM_DRAWER,
+	EDIT_ITEM_DRAWER,
+}
+
+export enum EDrawerMode {
+	EDIT,
+	ADD,
 }

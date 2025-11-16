@@ -8,6 +8,7 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import { AppSidebar } from "./components/app-sidebar";
+import { DrawerWrapper } from "./components/drawer-wrapper";
 import { SiteHeader } from "./components/site-header";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
 import { Toaster } from "./components/ui/sonner";
@@ -51,6 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 						{children}
 					</SidebarInset>
 					<Toaster />
+					<DrawerWrapper />
 				</SidebarProvider>
 				<ScrollRestoration />
 				<Scripts />
