@@ -38,7 +38,6 @@ const ID_PREFIX = "add-catalog-drawer";
 
 export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 	const isEditMode = mode === EDrawerMode.EDIT;
-	console.log(isEditMode);
 
 	const [, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
 	const [drawerData] = useAtom(drawerDataAtom);

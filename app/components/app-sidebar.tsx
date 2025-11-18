@@ -1,4 +1,8 @@
-import { IconFridge, IconListDetails } from "@tabler/icons-react";
+import {
+	IconFridge,
+	IconHomeSpark,
+	IconListDetails,
+} from "@tabler/icons-react";
 import type * as React from "react";
 import { NavMain } from "~/components/nav-main";
 import {
@@ -11,23 +15,30 @@ import {
 } from "~/components/ui/sidebar";
 import { DuckIcon } from "~/icons";
 
+export const NAV_MAIN = [
+	{
+		title: "Dashboard",
+		url: "/",
+		icon: IconHomeSpark,
+	},
+	{
+		title: "Catalog",
+		url: "/catalog",
+		icon: IconListDetails,
+	},
+	{
+		title: "Inventory",
+		url: "/inventory",
+		icon: IconFridge,
+	},
+];
+
 const data = {
 	user: {
 		name: "shadcn",
 		email: "m@example.com",
 	},
-	navMain: [
-		{
-			title: "Inventory",
-			url: "/",
-			icon: IconFridge,
-		},
-		{
-			title: "Catalog",
-			url: "/catalog",
-			icon: IconListDetails,
-		},
-	],
+	navMain: NAV_MAIN,
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

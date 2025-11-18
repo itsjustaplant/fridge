@@ -12,10 +12,14 @@ export type TProductCatalog = {
 	category: string;
 };
 
+export type TProductItem = {
+	amount: number;
+} & TProductCatalog;
+
 declare module "@tanstack/table-core" {
 	interface TableMeta<TData extends RowData> {
 		handleDelete: (id: string) => void;
-		handleEdit: (data: TProductCatalog) => void;
+		handleEdit: (data: TData) => void;
 	}
 }
 

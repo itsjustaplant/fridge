@@ -103,6 +103,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 	},
 	{
 		id: "actions",
+		header: "Actions",
 		cell: ({ row, table }) => (
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
