@@ -73,7 +73,7 @@
     "cf-typegen": "wrangler types && react-router typegen",
     "check": "tsc && react-router build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
-    "dev": "react-router dev",
+    "dev": "react-router dev --host",
     "preview": "npm run build && vite preview",
     "typecheck": "npm run typegen && tsc -b"
   },
