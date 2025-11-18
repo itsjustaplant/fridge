@@ -4,7 +4,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { useTheme } from "~/hooks/use-theme";
 
 export function NavUser({
 	user,
@@ -15,8 +14,6 @@ export function NavUser({
 		avatar: string;
 	};
 }) {
-	// TODO: Add a button that toggles theme
-	const { toggleTheme } = useTheme();
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>

@@ -117,6 +117,7 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 			} else {
 				toast.success(message);
 			}
+			setDrawerVisibility(false);
 		}
 	}, [
 		fetcherResponse,
@@ -238,15 +239,7 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 											</Select>
 										</Field>
 										<Field orientation="horizontal">
-											<Button
-												onClick={() => {
-													// TODO: detect submit and move this logic to there
-													setDrawerVisibility(false);
-												}}
-												type="submit"
-											>
-												Submit
-											</Button>
+											<Button type="submit">Submit</Button>
 											<DrawerClose asChild>
 												<Button
 													variant="outline"
