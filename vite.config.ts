@@ -5,15 +5,30 @@ import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
-	plugins: [
-		cloudflare({ viteEnvironment: { name: "ssr" } }),
-		tailwindcss(),
-		reactRouter(),
-		tsconfigPaths(),
-		mkcert(),
-	],
-	optimizeDeps: {
-		exclude: ["@preflower/barcode-detector-polyfill"],
-	},
+export default defineConfig(({ command }) => {
+	if (command === "serve") {
+		return {
+			plugins: [
+				cloudflare({ viteEnvironment: { name: "ssr" } }),
+				tailwindcss(),
+				reactRouter(),
+				tsconfigPaths(),
+				mkcert(),
+			],
+			optimizeDeps: {
+				exclude: ["@preflower/barcode-detector-polyfill"],
+			},
+		};
+	}
+	return {
+		plugins: [
+			cloudflare({ viteEnvironment: { name: "ssr" } }),
+			tailwindcss(),
+			reactRouter(),
+			tsconfigPaths(),
+		],
+		optimizeDeps: {
+			exclude: ["@preflower/barcode-detector-polyfill"],
+		},
+	};
 });
