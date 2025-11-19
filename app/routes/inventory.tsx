@@ -16,7 +16,6 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
-	console.log("hello");
 	const method = request?.method;
 
 	try {
