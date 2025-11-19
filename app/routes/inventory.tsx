@@ -4,6 +4,11 @@ import type { TProductItem } from "~/types";
 import { EHTTPResponse } from "~/types";
 import type { Route } from "../+types/root";
 
+// biome-ignore lint/correctness/noEmptyPattern: <shut the fuck up>
+export function meta({}: Route.MetaArgs) {
+	return [{ title: "Duck Inc." }];
+}
+
 export async function loader({ context }: Route.LoaderArgs) {
 	try {
 		const { results } = await context.cloudflare.env.DB.prepare(

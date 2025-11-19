@@ -4,6 +4,11 @@ import type { TProductCatalog } from "~/types";
 import { EHTTPResponse } from "~/types";
 import type { Route } from "../+types/root";
 
+// biome-ignore lint/correctness/noEmptyPattern: <shut the fuck up>
+export function meta({}: Route.MetaArgs) {
+	return [{ title: "Duck Inc." }];
+}
+
 export async function loader({ context }: Route.LoaderArgs) {
 	try {
 		const { results } = await context.cloudflare.env.DB.prepare(
@@ -105,7 +110,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 export default function Page({ loaderData }: Route.ComponentProps) {
 	const { results = [] } = loaderData || {};
-	console.log(results);
+
 	return (
 		<div className="flex flex-1 flex-col">
 			<div className="@container/main flex flex-1 flex-col gap-2">

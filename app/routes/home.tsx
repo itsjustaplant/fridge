@@ -1,7 +1,13 @@
 import { ChartAreaInteractive } from "~/components/chart-area-interactive";
 import { SectionCards } from "~/components/section-cards";
 import { DataTable } from "~/components/tables/dashboard-table";
+import type { Route } from "../+types/root";
 import data from "./data.json";
+
+// biome-ignore lint/correctness/noEmptyPattern: <shut the fuck up>
+export function meta({}: Route.MetaArgs) {
+	return [{ title: "Duck Inc." }];
+}
 
 export default function Page() {
 	return (
