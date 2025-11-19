@@ -1,5 +1,5 @@
 import { data } from "react-router";
-import { DataTable } from "~/components/tables/inventory-table";
+import { DataTable } from "~/components/data-table";
 import type { TProductItem } from "~/types";
 import { EHTTPResponse } from "~/types";
 import type { Route } from "../+types/root";
@@ -7,7 +7,7 @@ import type { Route } from "../+types/root";
 export async function loader({ context }: Route.LoaderArgs) {
 	try {
 		const { results } = await context.cloudflare.env.DB.prepare(
-			`SELECT * FROM fridge_items ORDER BY rowid DESC LIMIT 7`,
+			`SELECT * FROM fridge_items ORDER BY rowid DESC`,
 		).all();
 		return { results };
 	} catch (e) {
@@ -16,6 +16,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
+	console.log("hello");
 	const method = request?.method;
 
 	try {

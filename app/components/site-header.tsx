@@ -5,22 +5,25 @@ import { drawerKeyAtom, drawerVisibilityAtom } from "~/atoms/drawerAtom";
 import { ActionButton } from "~/components/action-button";
 import { Separator } from "~/components/ui/separator";
 import { SidebarTrigger } from "~/components/ui/sidebar";
-import { EDrawerContent } from "~/types";
+import { EDrawerContent, EPage } from "~/types";
 import { NAV_MAIN } from "./app-sidebar";
 
 type TPath = string;
 type TActionButtonProperty = {
 	text: string;
 	Icon: Icon;
+	route: EPage;
 };
 const ACTION_BUTTON_PROPERTIES_MAP: Record<TPath, TActionButtonProperty> = {
-	"/": {
+	"/inventory": {
 		text: "Scan Product",
 		Icon: IconZoomScan,
+		route: EPage.INVENTORY,
 	},
 	"/catalog": {
-		text: "Add Barcode",
+		text: "Scan Catalog",
 		Icon: IconZoomScan,
+		route: EPage.CATALOG,
 	},
 };
 
@@ -29,9 +32,12 @@ export function SiteHeader() {
 	const [, setDrawerKey] = useAtom(drawerKeyAtom);
 	const [, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
 
-	const { text, Icon } = ACTION_BUTTON_PROPERTIES_MAP[pathname as TPath] || {
-		text: "Scan Product",
-		Icon: IconZoomScan,
+	const { text, Icon, route } = ACTION_BUTTON_PROPERTIES_MAP[
+		pathname as TPath
+	] || {
+		text: null,
+		Icon: null,
+		route: null,
 	};
 	const pageTitle = NAV_MAIN.find((nav) => nav.url === pathname)?.title || "";
 	return (
@@ -43,15 +49,21 @@ export function SiteHeader() {
 					className="mx-2 data-[orientation=vertical]:h-4"
 				/>
 				<h1 className="text-base font-medium">{pageTitle}</h1>
-				<ActionButton
-					StartIcon={Icon}
-					onClick={() => {
-						setDrawerVisibility(true);
-						setDrawerKey(EDrawerContent.ADD_CATALOG_ITEM_DRAWER);
-					}}
-				>
-					{text}
-				</ActionButton>
+				{text && route && (
+					<ActionButton
+						StartIcon={Icon}
+						onClick={() => {
+							setDrawerVisibility(true);
+							setDrawerKey(
+								route === EPage.CATALOG
+									? EDrawerContent.ADD_CATALOG_DRAWER
+									: EDrawerContent.ADD_ITEM_DRAWER,
+							);
+						}}
+					>
+						{text}
+					</ActionButton>
+				)}
 			</div>
 		</header>
 	);

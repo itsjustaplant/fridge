@@ -42,7 +42,7 @@ import {
 import { useAtom } from "jotai";
 import * as React from "react";
 import { useEffect } from "react";
-import { useFetcher } from "react-router";
+import { useFetcher, useLocation } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
@@ -65,7 +65,13 @@ import {
 	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
-import { EDrawerContent, EHTTPResponse, type TProductItem } from "~/types";
+import { useRoute } from "~/hooks/useRoute";
+import {
+	EDrawerContent,
+	EHTTPResponse,
+	EPage,
+	type TProductItem,
+} from "~/types";
 
 export const schema = z.object({
 	barcode: z.string(),
@@ -110,7 +116,8 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 	},
 	{
 		accessorKey: "amount",
-		header: "Count",
+		header: ({ table }) =>
+			table?.options?.meta?.route === EPage.INVENTORY ? "Count" : null,
 		cell: ({ row }) => {
 			return <span>{row.original.amount}</span>;
 		},
@@ -132,18 +139,20 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-32">
-					<DropdownMenuItem
-						onSelect={() => {
-							table?.options?.meta?.handleEdit?.(row?.original);
-						}}
-					>
-						{row?.original?.category === "Drink" ? (
-							<IconGlass />
-						) : (
-							<IconToolsKitchen2 />
-						)}
-						{row?.original?.category === "Drink" ? "Drink" : "Eat"}
-					</DropdownMenuItem>
+					{table?.options?.meta?.route === EPage.INVENTORY && (
+						<DropdownMenuItem
+							onSelect={() => {
+								table?.options?.meta?.handleEdit?.(row?.original);
+							}}
+						>
+							{row?.original?.category === "Drink" ? (
+								<IconGlass />
+							) : (
+								<IconToolsKitchen2 />
+							)}
+							{row?.original?.category === "Drink" ? "Drink" : "Eat"}
+						</DropdownMenuItem>
+					)}
 					<DropdownMenuItem
 						onSelect={() => {
 							table?.options?.meta?.handleEdit?.(row?.original);
@@ -219,6 +228,8 @@ export function DataTable({
 	const [, setDrawerKey] = useAtom(drawerKeyAtom);
 	const [, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
 	const [, setDrawerData] = useAtom(drawerDataAtom);
+	const { pathname } = useLocation();
+	const route = useRoute();
 
 	const dataIds = React.useMemo<UniqueIdentifier[]>(
 		() => data?.map(({ barcode }) => barcode) || [],
@@ -251,6 +262,7 @@ export function DataTable({
 		meta: {
 			handleDelete: handleDelete,
 			handleEdit: handleEdit,
+			route,
 		},
 	});
 
@@ -288,13 +300,17 @@ export function DataTable({
 		if (data) {
 			await fetcher.submit(
 				{ barcode: id },
-				{ method: "DELETE", action: "/inventory" },
+				{ method: "DELETE", action: pathname },
 			);
 		}
 	}
 
 	function handleEdit(data: TProductItem) {
-		setDrawerKey(EDrawerContent.EDIT_CATALOG_ITEM_DRAWER);
+		setDrawerKey(
+			route === EPage.CATALOG
+				? EDrawerContent.EDIT_CATALOG_DRAWER
+				: EDrawerContent.EDIT_ITEM_DRAWER,
+		);
 		setDrawerVisibility(true);
 		setDrawerData(data);
 	}
@@ -323,7 +339,7 @@ export function DataTable({
 					<Table>
 						<TableHeader className="bg-muted sticky top-0 z-10">
 							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
+								<TableRow key={headerGroup.id} className="pl-4">
 									{headerGroup.headers.map((header) => {
 										return (
 											<TableHead key={header.id} colSpan={header.colSpan}>

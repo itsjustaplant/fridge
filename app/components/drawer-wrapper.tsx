@@ -6,24 +6,35 @@ import {
 } from "~/atoms/drawerAtom";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { EDrawerContent, EDrawerMode } from "~/types";
-import { CatalogItemDrawer } from "./drawers/catalog-item-drawer";
+import { CatalogDrawer } from "./drawers/catalog-drawer";
+import { InventoryDrawer } from "./drawers/inventory-drawer";
 import { Drawer } from "./ui/drawer";
 
 const getDrawerProperties = (drawerKey?: EDrawerContent) => {
 	switch (drawerKey) {
-		case EDrawerContent.ADD_CATALOG_ITEM_DRAWER:
+		case EDrawerContent.ADD_CATALOG_DRAWER:
 			return {
-				Content: CatalogItemDrawer,
+				Content: CatalogDrawer,
 				mode: EDrawerMode.ADD,
 			};
-		case EDrawerContent.EDIT_CATALOG_ITEM_DRAWER:
+		case EDrawerContent.EDIT_CATALOG_DRAWER:
 			return {
-				Content: CatalogItemDrawer,
+				Content: CatalogDrawer,
+				mode: EDrawerMode.EDIT,
+			};
+		case EDrawerContent.ADD_ITEM_DRAWER:
+			return {
+				Content: InventoryDrawer,
+				mode: EDrawerMode.ADD,
+			};
+		case EDrawerContent.EDIT_ITEM_DRAWER:
+			return {
+				Content: InventoryDrawer,
 				mode: EDrawerMode.EDIT,
 			};
 		default:
 			return {
-				Content: CatalogItemDrawer,
+				Content: CatalogDrawer,
 				mode: EDrawerMode.EDIT,
 			};
 	}

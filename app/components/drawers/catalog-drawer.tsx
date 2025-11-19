@@ -33,10 +33,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
+import { Separator } from "../ui/separator";
 
 const ID_PREFIX = "add-catalog-drawer";
 
-export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
+export function CatalogDrawer({ mode }: { mode: EDrawerMode }) {
 	const isEditMode = mode === EDrawerMode.EDIT;
 
 	const [, setDrawerVisibility] = useAtom(drawerVisibilityAtom);
@@ -123,6 +124,7 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 		fetcherResponse?.message,
 		fetcherResponse?.status,
 		state,
+		setDrawerVisibility,
 	]);
 
 	useEffect(() => {
@@ -182,6 +184,7 @@ export function CatalogItemDrawer({ mode }: { mode: EDrawerMode }) {
 												required
 											/>
 										</Field>
+										{(isEditMode || barcodes[0]?.rawValue) && <Separator />}
 										<Field>
 											<FieldLabel htmlFor={`${ID_PREFIX}-name`}>
 												Name

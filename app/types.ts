@@ -20,6 +20,7 @@ declare module "@tanstack/table-core" {
 	interface TableMeta<TData extends RowData> {
 		handleDelete: (id: string) => void;
 		handleEdit: (data: TData) => void;
+		route: EPage;
 	}
 }
 
@@ -30,8 +31,8 @@ export enum EHTTPResponse {
 }
 
 export enum EDrawerContent {
-	ADD_CATALOG_ITEM_DRAWER,
-	EDIT_CATALOG_ITEM_DRAWER,
+	ADD_CATALOG_DRAWER,
+	EDIT_CATALOG_DRAWER,
 	ADD_ITEM_DRAWER,
 	EDIT_ITEM_DRAWER,
 }
@@ -39,4 +40,10 @@ export enum EDrawerContent {
 export enum EDrawerMode {
 	EDIT,
 	ADD,
+}
+
+export enum EPage {
+	DASHBOARD,
+	CATALOG,
+	INVENTORY,
 }

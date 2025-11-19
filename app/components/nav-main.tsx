@@ -21,7 +21,6 @@ export function NavMain({
 	const navigate = useNavigate();
 
 	const handleClick = (url: string) => {
-		console.log(url);
 		navigate(url);
 	};
 

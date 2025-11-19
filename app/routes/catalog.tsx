@@ -1,5 +1,5 @@
 import { data } from "react-router";
-import { DataTable } from "~/components/tables/catalog-table";
+import { DataTable } from "~/components/data-table";
 import type { TProductCatalog } from "~/types";
 import { EHTTPResponse } from "~/types";
 import type { Route } from "../+types/root";
@@ -7,7 +7,7 @@ import type { Route } from "../+types/root";
 export async function loader({ context }: Route.LoaderArgs) {
 	try {
 		const { results } = await context.cloudflare.env.DB.prepare(
-			`SELECT * FROM product_catalog ORDER BY rowid DESC LIMIT 7`,
+			`SELECT * FROM product_catalog ORDER BY rowid`,
 		).all();
 		return { results };
 	} catch (e) {
