@@ -13,7 +13,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { DuckIcon } from "~/icons";
 
 export const NAV_MAIN = [
 	{
@@ -53,10 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						>
 							<div>
 								<div className="size-7 flex items-center content-center bg-primary rounded-md p-0.5 shadow-[0_0_70px_14px_rgba(255,212,93,0.9)]">
-									<DuckIcon
-										ariaLabel="duck logo"
-										className="scale-x-[-1] fill-[var(--duck)]"
-									/>
+									<img src="the-duck.png" alt="the duck" />
 								</div>
 								<span className="text-xl font-semibold font-playfair-800">
 									Duck Inc.
