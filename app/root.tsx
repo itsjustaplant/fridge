@@ -16,6 +16,48 @@ import "react-barcode-scanner/polyfill";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
+	{ rel: "icon", href: "/favicon.ico" },
+	{ rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+	{
+		rel: "apple-touch-icon",
+		sizes: "57x57",
+		href: "/apple-touch-icon-57x57.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "72x72",
+		href: "/apple-touch-icon-72x72.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "76x76",
+		href: "/apple-touch-icon-76x76.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "114x114",
+		href: "/apple-touch-icon-114x114.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "120x120",
+		href: "/apple-touch-icon-120x120.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "144x144",
+		href: "/apple-touch-icon-144x144.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "152x152",
+		href: "/apple-touch-icon-152x152.png",
+	},
+	{
+		rel: "apple-touch-icon",
+		sizes: "180x180",
+		href: "/apple-touch-icon-180x180.png",
+	},
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
 		rel: "preconnect",
